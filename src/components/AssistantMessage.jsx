@@ -1,4 +1,5 @@
 import React from "react";
+import "./AssistantMessage.css";
 
 /**
  * A presentational message bubble for the Chaa-Ass-Mera assistant.
@@ -24,14 +25,18 @@ export default function AssistantMessage({
   const label = isUser ? "You" : role === "system" ? "System" : "Chaa-Ass-Mera";
 
   let timeLabel = "";
+  let dateTimeValue;
   if (timestamp) {
     const date = timestamp instanceof Date ? timestamp : new Date(timestamp);
-    timeLabel = Number.isNaN(date.getTime())
-      ? String(timestamp)
-      : new Intl.DateTimeFormat(undefined, {
-          hour: "2-digit",
-          minute: "2-digit",
-        }).format(date);
+    if (!Number.isNaN(date.getTime())) {
+      timeLabel = new Intl.DateTimeFormat(undefined, {
+        hour: "2-digit",
+        minute: "2-digit",
+      }).format(date);
+      dateTimeValue = date.toISOString();
+    } else {
+      timeLabel = String(timestamp);
+    }
   }
 
   return (
@@ -45,7 +50,7 @@ export default function AssistantMessage({
       <div className="assistant-message__header">
         <span className="assistant-message__speaker">{label}</span>
         {timeLabel && (
-          <time className="assistant-message__time" dateTime={timestamp instanceof Date ? timestamp.toISOString() : String(timestamp)}>
+          <time className="assistant-message__time" dateTime={dateTimeValue}>
             {timeLabel}
           </time>
         )}
